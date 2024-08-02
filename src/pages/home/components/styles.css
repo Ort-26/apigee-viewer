@@ -1,0 +1,57 @@
+.card.chart-card .nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  color: #673ab7;
+  border-color: #673ab7;
+}
+
+div .dashboard-card .bg-white {
+  background-color: white;
+}
+
+.img-settings {
+  max-width: 10%;
+}
+
+div.settings-parent-card:hover .img-settings-spin{
+  transform: rotate(30deg);
+}
+
+.img-settings-spin {
+  transition: transform 0.5s ease-in-out;
+}
+
+
+div .card-salir:hover {
+  background-color: darkslategrey !important;
+  cursor: pointer;
+}
+
+.card-zoom {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s; 
+  cursor: pointer;
+}
+
+@media (min-width: 576px) { 
+  .card-zoom:hover {
+    z-index: 1;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 1);
+  }
+}
+
+@media (min-width: 768px) { 
+  .card-zoom:hover {
+    transform: scale(1.09);
+    z-index: 1;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 1);
+  }
+}
+
+@media (min-width: 1200px) { 
+  .card-zoom:hover {
+    transform: scale(1.1);
+    z-index: 1;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 1);
+  }
+}
