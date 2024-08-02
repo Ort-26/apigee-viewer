@@ -1,1 +1,2 @@
 import './analizeApiProxy'
+import './mapApiProxy'

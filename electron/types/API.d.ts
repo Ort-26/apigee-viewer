@@ -4,6 +4,7 @@ export {}
 
 interface API {
     AnalizeProxyPath: IAnalizeProxyPath
+    MapApiProxyFromPath: IMapApiProxyFromPath
 }
 
 

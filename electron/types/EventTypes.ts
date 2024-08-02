@@ -1,3 +1,7 @@
 export enum ApigeeEslintTypes {
-    Analizar = "Analizar"
+    Analizar = "AnalizarApigeeEslint"
+}
+
+export enum ApiproxyStruct {
+    GenerarEsquema = "GenerarEsquemaApiProxy"
 }

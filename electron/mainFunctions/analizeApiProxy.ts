@@ -5,6 +5,7 @@ import * as path from 'path'
 import { IApigeelintRes } from "../types/apigeelintResponse";
 
 export interface AnalizeProxyPathRes {
+    baseurl: string
     results: IApigeelintRes[] | undefined
 }
 
@@ -18,6 +19,7 @@ async function analizeProxyPath(): Promise<AnalizeProxyPathRes> {
     });
     if (canceled || filePaths === undefined) {
         const res = {
+            baseurl: '',
             results: undefined
         }
         return res;
@@ -27,12 +29,14 @@ async function analizeProxyPath(): Promise<AnalizeProxyPathRes> {
         const resApi = await apigeeLintAnalyze(filePaths[0])
         return new Promise((resolve) => {
             const res: AnalizeProxyPathRes = {
+                baseurl: filePaths[0],
                 results: JSON.parse(resApi)
             }
             resolve(res);
         });
     } catch (error) {
         const res = {
+            baseurl: '',
             results: undefined
         }
         return res;
@@ -43,7 +47,6 @@ async function apigeeLintAnalyze(source: string): Promise<string> {
     return new Promise((resolve, reject) => {
         const apigeelintPath = path.join(__dirname, 'node_modules','apigeelint','cli.js');
         const command = `node ${apigeelintPath} -s ${source} -f json.js`;
-        console.log(command)
             exec(command, (error, stdout, stderr) => { 
                 if (error) {
                     if (error.code === 1) { 
