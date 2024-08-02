@@ -2,53 +2,84 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as xml2js from 'xml2js';
 import { ipcMain } from "electron";
-import { ApiproxyStruct } from "../types/EventTypes";
-import { IApiProxyStruct } from "../types/mapApiProxyRes";
+import { ApiproxyStruct } from "../types/EventTypes"; 
+import { IApiProxyUniqueStruct } from '../types/mapApiProxyRes';
+import { json } from 'react-router-dom';
+import { RawProxyEndpoint } from '../types/rawXmlToJsonProxyEndpoint';
 
 export interface IApiProxyMap {
-    results: IApiProxyStruct[] | undefined
+    results: IApiProxyUniqueStruct | undefined
 }
 
+const parser = new xml2js.Parser();
 
 ipcMain.handle(ApiproxyStruct.GenerarEsquema, async function (_,baseurl: string): Promise<IApiProxyMap> {
-    return await generarEsquemaApiProxy(baseurl)
+    //return await generarEsquemaApiProxy(baseurl)
+    // return await generarEsquemaApiProxy('C:\\Users\\carlos.ortega\\Documents\\helloworld\\apiproxy')
+    return await generarEsquemaApiProxy('C:\\Users\\carlos.ortega\\Documents\\retail-v1-carlos-ortega_rev18_2024_07_29\\apiproxy')
 });
 
 async function generarEsquemaApiProxy(directoryPath: string): Promise<IApiProxyMap> {
-    const parser = new xml2js.Parser();
-    //Analizar directorio de proxies
+    const files = await readAllFiles(directoryPath)
+    const xmlFiles = files.filter(file => path.extname(file).toLowerCase() === '.xml');
+    const proxies = filterByFolder("proxies",xmlFiles)
+    const targets = filterByFolder("targets",xmlFiles)
     return new Promise((resolve, reject) => {
-        fs.readdir(directoryPath, (err, files) => {
-            if (err) {
-                reject(`Failed to read directory: ${err.message}`);
-                return;
+        const struct: IApiProxyUniqueStruct = {
+            proxyEndpoint: {
+                PreFlow: [],
+                PostFlow: [],
+                ConditionalFlow: []
+            },
+            targetEndpoint: {
+                PreFlow: [],
+                PostFlow: [],
+                ConditionalFlow: []
             }
-
-            const xmlFiles = files.filter(file => path.extname(file).toLowerCase() === '.xml');
-            const jsonPromises = xmlFiles.map(file => {
-                return new Promise((resolveJson, rejectJson) => {
-                    const filePath = path.join(directoryPath, file);
-                    fs.readFile(filePath, 'utf8', (err, data) => {
+        }
+        try {
+            proxies.map(actualFile => {
+                fs.readFile(actualFile, 'utf-8', (err,data) => {
+                    if (err) {
+                        console.log(err)
+                        throw new Error('Read error');
+                    }
+                    parser.parseString(data, (err,res) => {
                         if (err) {
-                            rejectJson(`Failed to read file ${file}: ${err.message}`);
-                            return;
+                            console.log(err)
+                            throw new Error('Parse error');
                         }
+                    
+                    })
 
-                        parser.parseString(data, (err, result) => {
-                            if (err) {
-                                rejectJson(`Failed to parse XML file ${file}: ${err.message}`);
-                                return;
-                            }
-                            // Type assertion to Root if you know the exact structure
-                            resolveJson({ file: file, json: result as IApiProxyStruct });
-                        });
-                    });
-                });
-            });
+                })
+            })
+        } catch(e) {
+            console.log(e)
+            reject({results: undefined})
+        }
+        resolve({results: struct})
+    })
+}
 
-            Promise.all(jsonPromises)
-                .then(results => resolve(results))
-                .catch(error => reject(`Error converting files: ${error}`));
-        });
-    });
+function parseToUnique(data: RawProxyEndpoint) {
+
+}
+
+async function readAllFiles(path:string, arrayOfFiles: string[] = []) {
+	const files = fs.readdirSync(path)
+	files.forEach(file => {
+		const stat = fs.statSync(`${path}\\${file}`)
+		if(stat.isDirectory()){
+			readAllFiles(`${path}\\${file}`, arrayOfFiles)
+		}else{
+			arrayOfFiles.push(`${path}\\${file}`)
+		}
+	}
+	)
+	return arrayOfFiles
+}
+
+function filterByFolder(folderName: string,arrayOfFiles: string[]): string[] {
+    return arrayOfFiles.filter(x => x.includes(`\\${folderName}\\`));
 }

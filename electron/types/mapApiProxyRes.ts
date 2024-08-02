@@ -3,27 +3,23 @@ export interface IApigeePolitic {
     name: string
 }
 
-export interface IApigeeSteps {
-    preflow: IApigeePolitic[]
-    conditionalFlow: IApigeePolitic[]
-    postflow: IApigeePolitic[]
+export interface IApigeeFlow {
+	name: string
+	request: IApigeePolitic[]
+	response: IApigeePolitic[]
+}
+
+export interface IApiProxyFlows {
+	PreFlow: IApigeeFlow[],
+	PostFlow: IApigeeFlow[],
+	ConditionalFlow: IApigeeFlow[]
 }
 
 export interface IApiProxyUniqueStruct {
-    request: {
-        proxyEndpoint: IApigeeSteps,
-        targetEndpoint: IApigeeSteps
-    }
-    response: {
-        proxyEndpoint: IApigeeSteps,
-        targetEndpoint: IApigeeSteps
-    }
+	proxyEndpoint: IApiProxyFlows
+	targetEndpoint: IApiProxyFlows
 }
 
-export interface IApiProxyStruct {
-    name: string
-    struct: IApiProxyUniqueStruct
-}
 /*
 {
 	"ProxyEndpoint": {

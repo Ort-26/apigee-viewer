@@ -1,7 +1,7 @@
 {
-  "name": "electron-vite-project",
+  "name": "Electron-Viewer",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "export-data": "cpy node_modules/apigeelint/. dist-electron/",
     "dev": "npm run export-data && vite",

@@ -2,9 +2,10 @@ import { contextBridge } from "electron";
 import { AnalizeApi } from "./analizeApiProxyPreload";
 import { MapApiProxy } from './mapApiProxyPreload'
 import { IApiProxyMap } from "../mainFunctions/mapApiProxy";
+import { AnalizeProxyPathRes } from "../mainFunctions/analizeApiProxy";
 
 export interface IAnalizeProxyPath {
-    AnalizeApi: () => Promise<IAnalizeProxyPath>
+    AnalizeApi: () => Promise<AnalizeProxyPathRes>
 }
 
 export interface IMapApiProxyFromPath {
