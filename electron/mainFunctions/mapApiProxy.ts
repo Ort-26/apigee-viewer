@@ -4,7 +4,6 @@ import * as xml2js from 'xml2js';
 import { ipcMain } from "electron";
 import { ApiproxyStruct } from "../types/EventTypes"; 
 import { IApiProxyUniqueStruct } from '../types/mapApiProxyRes';
-import { json } from 'react-router-dom';
 import { RawProxyEndpoint } from '../types/rawXmlToJsonProxyEndpoint';
 
 export interface IApiProxyMap {
@@ -14,16 +13,16 @@ export interface IApiProxyMap {
 const parser = new xml2js.Parser();
 
 ipcMain.handle(ApiproxyStruct.GenerarEsquema, async function (_,baseurl: string): Promise<IApiProxyMap> {
-    //return await generarEsquemaApiProxy(baseurl)
+    return await generarEsquemaApiProxy(baseurl)
     // return await generarEsquemaApiProxy('C:\\Users\\carlos.ortega\\Documents\\helloworld\\apiproxy')
-    return await generarEsquemaApiProxy('C:\\Users\\carlos.ortega\\Documents\\retail-v1-carlos-ortega_rev18_2024_07_29\\apiproxy')
+    //return await generarEsquemaApiProxy('C:\\Users\\carlos.ortega\\Documents\\retail-v1-carlos-ortega_rev18_2024_07_29\\apiproxy')
 });
 
 async function generarEsquemaApiProxy(directoryPath: string): Promise<IApiProxyMap> {
     const files = await readAllFiles(directoryPath)
     const xmlFiles = files.filter(file => path.extname(file).toLowerCase() === '.xml');
     const proxies = filterByFolder("proxies",xmlFiles)
-    const targets = filterByFolder("targets",xmlFiles)
+    //const targets = filterByFolder("targets",xmlFiles)
     return new Promise((resolve, reject) => {
         const struct: IApiProxyUniqueStruct = {
             proxyEndpoint: {
@@ -50,8 +49,8 @@ async function generarEsquemaApiProxy(directoryPath: string): Promise<IApiProxyM
                             throw new Error('Parse error');
                         }
                     
+                        console.log(res)
                     })
-
                 })
             })
         } catch(e) {
@@ -62,9 +61,9 @@ async function generarEsquemaApiProxy(directoryPath: string): Promise<IApiProxyM
     })
 }
 
-function parseToUnique(data: RawProxyEndpoint) {
+// function parseToUnique(data: RawProxyEndpoint) {
 
-}
+// }
 
 async function readAllFiles(path:string, arrayOfFiles: string[] = []) {
 	const files = fs.readdirSync(path)
